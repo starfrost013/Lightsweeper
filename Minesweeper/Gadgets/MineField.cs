@@ -53,6 +53,8 @@ namespace Minesweeper
 
                 if (numberOfMinesValue > 0) NumberOfMines = numberOfMinesValue;
             }
+
+            SceneManager.MainWindow.Settings.Size = new Vector2(MineElementSize.X * (MineFieldSize.X + 2), MineElementSize.Y * (MineFieldSize.Y + 2)); 
         }
 
         public void Load(Window cWindow)
@@ -128,6 +130,7 @@ namespace Minesweeper
             {
                 // clear the field
                 case GameState.Init:
+                    // clean up all UI
                     CleanupUiElements();
                     Load(SceneManager.MainWindow);
                     Create();
@@ -135,17 +138,17 @@ namespace Minesweeper
                     break;
                 case GameState.Playing:
                     // check if the player has won
+                    if (HasPlayerWon()) State = GameState.Win;
                     break;
                 case GameState.Win:
-                    // these will be cleaned up later
-                    foreach (Mine mine in Mines) UIManager.RemoveElement(mine);
-                    Mines.Clear();
                     // you do not HAVE to call this method, but we need the size of the ACTUAL string - not the localisation string name
                     // you can just call fontmanager::drawtext with the #[ syntax
                     string winText = LocalisationManager.ProcessString("#[STRING_YOU_WIN]");
                     Vector2 textSize = FontManager.GetTextSize("Comic Sans 36pt", winText);
-                    FontManager.DrawText(SceneManager.MainWindow, "You Win!", "Comic Sans 36pt", new(GlobalSettings.ResolutionX / 2 - (textSize.X / 2),
-                        GlobalSettings.ResolutionY / 2 - (textSize.Y / 2)), Color.White, Color.Red, NuCore.SDL2.SDL_ttf.TTF_FontStyle.Underline);
+
+                    // don't use resolution here because the window can be resized
+                    FontManager.DrawText(SceneManager.MainWindow, "You Win!", "Comic Sans 36pt", new(SceneManager.MainWindow.Settings.Size.X / 2 - (textSize.X / 2),
+                        SceneManager.MainWindow.Settings.Size.Y / 2 - (textSize.Y / 2)), Color.White, Color.Red, NuCore.SDL2.SDL_ttf.TTF_FontStyle.Underline);
                     break;
                 case GameState.Lose:
                     break;
@@ -154,6 +157,8 @@ namespace Minesweeper
 
             // render all positions
             foreach (Mine element in Mines) element.OnRender(cWindow);
+
+
         }
 
         private void CleanupUiElements(bool alsoRemoveField = true)
@@ -262,10 +267,12 @@ namespace Minesweeper
                         {
                             default:
                                 mine.WasMine = (mine.Type == MineType.HiddenMine);
+                                if (mine.WasMine) mine.IsRevealed = true;
                                 mine.Type = MineType.Flag;
                                 break;
                             case MineType.Flag:
                                 mine.Type = MineType.QuestionMark;
+                                if (mine.WasMine) mine.IsRevealed = false;
                                 break;
                             case MineType.Mine: // can't do this with a mine. duh.
                                 break;
@@ -276,8 +283,6 @@ namespace Minesweeper
                         }
                         break;
                 }
-
-                if (HasPlayerWon()) State = GameState.Win;
             }
         }
 
@@ -318,7 +323,8 @@ namespace Minesweeper
                         }
                     }
 
-                    if (numberOfNearbyMines > 0) mine.Text = numberOfNearbyMines.ToString();
+                    if (numberOfNearbyMines > 0
+                        && (mine.Type == MineType.None || mine.Type == MineType.HiddenMine)) mine.Text = numberOfNearbyMines.ToString();
 
                     mine.IsRevealed = true;
                     mine.BackgroundColour = Color.LightGray;

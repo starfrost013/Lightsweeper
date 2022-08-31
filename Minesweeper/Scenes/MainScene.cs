@@ -13,8 +13,8 @@ namespace Minesweeper
 
         public override void Start()
         {
-            FontManager.LoadFont("comic", 12, "Comic Sans"); // load comic sans
-            FontManager.LoadFont("comic", 36, "Comic Sans 36pt"); // load comic sans but bigger
+            FontManager.LoadFont("consola", 12, "Comic Sans"); // load comic sans
+            FontManager.LoadFont("consola", 36, "Comic Sans 36pt"); // load comic sans but bigger
         }
 
         public override void Shutdown()
