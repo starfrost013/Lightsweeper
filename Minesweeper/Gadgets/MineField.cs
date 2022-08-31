@@ -19,7 +19,7 @@ namespace Minesweeper
 
         internal static Vector2 MineFieldSize = new(9, 9);
 
-        internal static int MineCount = 10;
+        internal static int NumberOfMines = 10;
 
         public static TextureAtlas? Sprites { get; set; }
 
@@ -34,6 +34,25 @@ namespace Minesweeper
             OnMousePressed += MineMousePressed;
             OnKeyPressed += MineKeyPressed;
             State = GameState.Init;
+
+            NCINIFileSection localSettingsGameSection = LocalSettings.LocalSettingsFile.GetSection("Game");
+
+            // Load the game settings
+            if (localSettingsGameSection != null)
+            {
+                string mineFieldSizeX = localSettingsGameSection.GetValue("MinefieldSizeX");
+                string mineFieldSizeY = localSettingsGameSection.GetValue("MinefieldSIzeY");
+                string numberOfMines = localSettingsGameSection.GetValue("NumberOfMines");
+
+                _ = int.TryParse(mineFieldSizeX, out var mineFieldSizeXValue);
+                _ = int.TryParse(mineFieldSizeY, out var mineFieldSizeYValue);
+                _ = int.TryParse(numberOfMines, out var numberOfMinesValue);
+
+                if (mineFieldSizeXValue > 0
+                    || mineFieldSizeYValue > 0) MineFieldSize = new Vector2(mineFieldSizeXValue, mineFieldSizeYValue);
+
+                if (numberOfMinesValue > 0) NumberOfMines = numberOfMinesValue;
+            }
         }
 
         public void Load(Window cWindow)
@@ -66,17 +85,18 @@ namespace Minesweeper
                 }
             }
 
-            for (int mineId = 0; mineId < MineCount; mineId++)
+            for (int mineId = 0; mineId < NumberOfMines; mineId++)
             {
                 int x = Random.Next(0, Convert.ToInt32(MineFieldSize.X));
                 int y = Random.Next(0, Convert.ToInt32(MineFieldSize.Y));
 
                 Mine? mine = GetMine(x, y);
 
+#if DEBUG
                 if (mine == null) _ = new NCException($"Attempted to place invalid mine at position {x},{y} (range is 0,0 to {MineFieldSize.X},{MineFieldSize.Y}", 1000, $"GetMine({x}, {y} returned null", NCExceptionSeverity.FatalError);
 
                 NCLogging.Log($"Spawned mine at {x},{y}");
-
+#endif
                 if (mine != null
                     && mine.Type != MineType.HiddenMine)
                 {

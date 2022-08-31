@@ -45,6 +45,7 @@
 		<None Remove="$(ProgramFiles)/Lightning Software Development Kit/Libraries/SDL2_image-v2.0.5-x64.dll" />
 		<None Remove="$(ProgramFiles)/Lightning Software Development Kit/Libraries/SDL2_ttf-v2.0.18-x64.dll" />
 		<None Remove="$(ProgramFiles)/Lightning Software Development Kit/Libraries/SDL2_mixer-v2.0.4-x64.dll" />
+		<None Remove="Content\GameSettings.ini" />
 		<None Remove="Content\Localisation\en-GB.ini" />
 		<None Remove="Content\Sprites.png" />
 	</ItemGroup>
@@ -128,6 +129,9 @@
 		<Content Include="$(ProgramFiles)/Lightning Software Development Kit/Libraries/SDL2_mixer-v2.0.4-x64.dll">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 			<Link>Libraries/SDL2_mixer-v2.0.4-x64.dll</Link>
+		</Content>
+		<Content Include="Content\GameSettings.ini">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Content\Localisation\en-GB.ini">
 		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
