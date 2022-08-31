@@ -27,6 +27,7 @@ namespace Minesweeper
 
         public GameState State { get; set; }
 
+        private bool FirstClick { get; set; }
         public MineField()
         {
             Mines = new List<Mine>();
@@ -34,6 +35,7 @@ namespace Minesweeper
             OnMousePressed += MineMousePressed;
             OnKeyPressed += MineKeyPressed;
             State = GameState.Init;
+            FirstClick = true;
 
             NCINIFileSection localSettingsGameSection = LocalSettings.LocalSettingsFile.GetSection("Game");
 
@@ -130,6 +132,7 @@ namespace Minesweeper
             {
                 // clear the field
                 case GameState.Init:
+                    FirstClick = true;
                     // clean up all UI
                     CleanupUiElements();
                     Load(SceneManager.MainWindow);
@@ -141,6 +144,20 @@ namespace Minesweeper
                     if (HasPlayerWon()) State = GameState.Win;
                     break;
                 case GameState.Win:
+                    // WHAT THE FUCK CLEARING IT IS CAUSING A CRASH
+                    // DUE TO CHANGING ENUMERATION OPERATION ????
+
+                    // I WROTE THIS FUCKING GAME ENIGNE SO ITS MY OWN FAULT
+                    // SO WE DO THIS FUCKING STUPID HACK INSTEAD
+                    // IN 1.0.2 WE WILL FIX THIS STUPID FUCKING PROBLEM CAUSED BY ME, STARFROST, BEING AN IDIOT
+                    foreach (Mine element in Mines)
+                    {
+                        element.BackgroundColour = Color.FromArgb(0, 0, 0, 0);
+                        element.Text = "";
+                        element.Type = MineType.None;
+                    }
+
+                    // draw the text
                     // you do not HAVE to call this method, but we need the size of the ACTUAL string - not the localisation string name
                     // you can just call fontmanager::drawtext with the #[ syntax
                     string winText = LocalisationManager.ProcessString("#[STRING_YOU_WIN]");
@@ -157,8 +174,6 @@ namespace Minesweeper
 
             // render all positions
             foreach (Mine element in Mines) element.OnRender(cWindow);
-
-
         }
 
         private void CleanupUiElements(bool alsoRemoveField = true)
@@ -218,6 +233,14 @@ namespace Minesweeper
                     case SDL_MouseButton.Left:
                         if (mine.IsRevealed) break;
     
+                        // implement the "first click is always safe" feature
+                        if (FirstClick
+                            && mine.Type == MineType.HiddenMine)
+                        {
+                            mine.Type = MineType.None;
+                            FirstClick = false;
+                        }
+
                         switch (mine.Type)
                         {
                             case MineType.HiddenMine: // you lose
@@ -269,10 +292,12 @@ namespace Minesweeper
                                 mine.WasMine = (mine.Type == MineType.HiddenMine);
                                 if (mine.WasMine) mine.IsRevealed = true;
                                 mine.Type = MineType.Flag;
+                                mine.ForegroundColour = Color.FromArgb(0, mine.ForegroundColour.R, mine.ForegroundColour.G, mine.ForegroundColour.B); // bad
                                 break;
                             case MineType.Flag:
                                 mine.Type = MineType.QuestionMark;
                                 if (mine.WasMine) mine.IsRevealed = false;
+                                mine.ForegroundColour = Color.FromArgb(255, mine.ForegroundColour.R, mine.ForegroundColour.G, mine.ForegroundColour.B); // bad
                                 break;
                             case MineType.Mine: // can't do this with a mine. duh.
                                 break;
