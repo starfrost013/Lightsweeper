@@ -46,7 +46,7 @@ namespace Minesweeper
             HoverColour = Color.DarkGray;
             PressedColour = Color.DarkSlateGray;
             ForegroundColour = Color.White;
-            Font = "Comic Sans";
+            Font = "Consolas 12pt";
             Filled = true;
 
             UIManager.AddElement(this);

@@ -2,6 +2,7 @@
 using NuCore.Utilities;
 using LightningGL;
 using System.Drawing;
+using System.Diagnostics;
 using System.Numerics;
 
 namespace Minesweeper
@@ -13,21 +14,48 @@ namespace Minesweeper
     /// </summary>
     public class MineField : Gadget
     {
+        /// <summary>
+        /// The mines in the minefield.
+        /// </summary>
         public List<Mine> Mines { get; set; }
-
-        internal static Vector2 MineElementSize = new(32, 32);
-
-        internal static Vector2 MineFieldSize = new(9, 9);
-
-        internal static int NumberOfMines = 10;
-
-        public static TextureAtlas? Sprites { get; set; }
 
         private static Random Random = new Random();
 
+        public static TextureAtlas? Sprites { get; set; }
+
+        /// <summary>
+        /// THe state of the game.
+        /// </summary>
         public GameState State { get; set; }
 
+        /// <summary>
+        /// Determines if this is the first click of the game
+        /// </summary>
         private bool FirstClick { get; set; }
+
+        /// <summary>
+        /// The time the game has elapsed.
+        /// </summary>
+        public Stopwatch GameTime { get; set; }
+
+        /// <summary>
+        /// Default size of a single mine element.
+        /// </summary>
+        internal static Vector2 MineElementSize = new(32, 32);
+
+        /// <summary>
+        /// Default size of the minefield
+        /// </summary>
+        internal static Vector2 MineFieldSize = new(9, 9);
+
+        /// <summary>
+        /// Default number of mines.
+        /// </summary>
+        internal static int NumberOfMines = 10;
+
+        /// <summary>
+        /// Minefield constructor
+        /// </summary>
         public MineField()
         {
             Mines = new List<Mine>();
@@ -36,6 +64,8 @@ namespace Minesweeper
             OnKeyPressed += MineKeyPressed;
             State = GameState.Init;
             FirstClick = true;
+            GameTime = new Stopwatch();
+            GameTime.Start();
 
             NCINIFileSection localSettingsGameSection = LocalSettings.LocalSettingsFile.GetSection("Game");
 
@@ -56,7 +86,7 @@ namespace Minesweeper
                 if (numberOfMinesValue > 2) NumberOfMines = numberOfMinesValue;
             }
 
-            SceneManager.MainWindow.Settings.Size = new Vector2(MineElementSize.X * (MineFieldSize.X + 2), MineElementSize.Y * (MineFieldSize.Y + 2)); 
+            SceneManager.MainWindow.Settings.Size = new Vector2(MineElementSize.X * (MineFieldSize.X + 2), MineElementSize.Y * (MineFieldSize.Y + 2));
         }
 
         public void Load(Window cWindow)
@@ -115,6 +145,12 @@ namespace Minesweeper
             }
         }
 
+        /// <summary>
+        /// Gets the mine at position <paramref name="x"/>, <paramref name="y"/> in the mine field.
+        /// </summary>
+        /// <param name="x">The horizontal minefield position.</param>
+        /// <param name="y">The vertical minefield position.</param>
+        /// <returns>If a mine position is present at that location, returns it. Otherwise null.</returns>
         public Mine? GetMine(int x, int y)
         {
             foreach (Mine element in Mines)
@@ -133,6 +169,7 @@ namespace Minesweeper
                 // clear the field
                 case GameState.Init:
                     FirstClick = true;
+                    GameTime.Restart();
                     // clean up all UI
                     CleanupUiElements();
                     Load(SceneManager.MainWindow);
@@ -142,8 +179,10 @@ namespace Minesweeper
                 case GameState.Playing:
                     // check if the player has won
                     if (HasPlayerWon()) State = GameState.Win;
+
                     break;
                 case GameState.Win:
+                    GameTime.Stop();
                     // WHAT THE FUCK CLEARING IT IS CAUSING A CRASH
                     // DUE TO CHANGING ENUMERATION OPERATION ????
 
@@ -161,10 +200,10 @@ namespace Minesweeper
                     // you do not HAVE to call this method, but we need the size of the ACTUAL string - not the localisation string name
                     // you can just call fontmanager::drawtext with the #[ syntax
                     string winText = LocalisationManager.ProcessString("#[STRING_YOU_WIN]");
-                    Vector2 textSize = FontManager.GetTextSize("Comic Sans 36pt", winText);
+                    Vector2 textSize = FontManager.GetTextSize("Consolas 36pt", winText);
 
                     // don't use resolution here because the window can be resized
-                    FontManager.DrawText(SceneManager.MainWindow, "You Win!", "Comic Sans 36pt", new(SceneManager.MainWindow.Settings.Size.X / 2 - (textSize.X / 2),
+                    FontManager.DrawText(SceneManager.MainWindow, "You Win!", "Consolas 36pt", new(SceneManager.MainWindow.Settings.Size.X / 2 - (textSize.X / 2),
                         SceneManager.MainWindow.Settings.Size.Y / 2 - (textSize.Y / 2)), Color.White, Color.Red, NuCore.SDL2.SDL_ttf.TTF_FontStyle.Underline);
                     break;
                 case GameState.Lose:
@@ -172,6 +211,9 @@ namespace Minesweeper
 
             }
 
+            // do this all the time for now
+            FontManager.DrawText(SceneManager.MainWindow, $"Time Elapsed: {((double)GameTime.ElapsedMilliseconds / 1000).ToString("F1")} seconds", 
+                "Consolas 12pt", new Vector2(0, 0), Color.White, Color.Blue);
             // render all positions
             foreach (Mine element in Mines) element.OnRender(cWindow);
         }
@@ -235,11 +277,9 @@ namespace Minesweeper
     
                         // implement the "first click is always safe" feature
                         if (FirstClick
-                            && mine.Type == MineType.HiddenMine)
-                        {
-                            mine.Type = MineType.None;
-                            FirstClick = false;
-                        }
+                            && mine.Type == MineType.HiddenMine) mine.Type = MineType.None;
+
+                        FirstClick = false;
 
                         switch (mine.Type)
                         {
