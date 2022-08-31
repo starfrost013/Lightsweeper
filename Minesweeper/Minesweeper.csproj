@@ -1,0 +1,139 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <PlatformTarget>x64</PlatformTarget>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Reference Include="LightningGL">
+      <HintPath>$(ProgramFiles)/Lightning Software Development Kit/LightningGL.dll</HintPath>
+    </Reference>
+    <Reference Include="LightningPackager">
+      <HintPath>$(ProgramFiles)/Lightning Software Development Kit/LightningPackager.dll</HintPath>
+    </Reference>
+    <Reference Include="NuCore.SDL2">
+      <HintPath>$(ProgramFiles)/Lightning Software Development Kit/NuCore.SDL2.dll</HintPath>
+    </Reference>
+    <Reference Include="NuCore.Utilities">
+      <HintPath>$(ProgramFiles)/Lightning Software Development Kit/NuCore.Utilities.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+	<!-- Shared includes for all examples. These are copied individually because they are open source and devs use them as part of the SDK -->
+    <ItemGroup>
+		<None Remove="$(ProgramFiles)/Lightning Software Development Kit/libFLAC-8.dll" />
+		<None Remove="$(ProgramFiles)/Lightning Software Development Kit/libmodplug-1.dll" />
+		<None Remove="$(ProgramFiles)/Lightning Software Development Kit/libmpg123-0.dll" />
+		<None Remove="$(ProgramFiles)/Lightning Software Development Kit/libogg-0.dll" />
+		<None Remove="$(ProgramFiles)/Lightning Software Development Kit/libopus-0.dll" />
+		<None Remove="$(ProgramFiles)/Lightning Software Development Kit/libopusfile-0.dll" />
+		<None Remove="$(ProgramFiles)/Lightning Software Development Kit/libpng16-16.dll" />
+		<None Remove="$(ProgramFiles)/Lightning Software Development Kit/libvorbis-0.dll" />
+		<None Remove="$(ProgramFiles)/Lightning Software Development Kit/libvorbisfile-3.dll" />
+		<None Remove="$(ProgramFiles)/Lightning Software Development Kit/zlib.dll" />
+		<None Remove="Content/Engine.ini" />
+		<None Remove="$(ProgramFiles)/Lightning Software Development Kit/Libraries/libfreetype-6.dll" />
+		<None Remove="$(ProgramFiles)/Lightning Software Development Kit/Libraries/libjpeg-9.dll" />
+		<None Remove="$(ProgramFiles)/Lightning Software Development Kit/Libraries/libtiff-5.dll" />
+		<None Remove="$(ProgramFiles)/Lightning Software Development Kit/Libraries/libwebp-7.dll" />
+		<None Remove="$(ProgramFiles)/Lightning Software Development Kit/Libraries/SDL2.dll" />
+		<None Remove="$(ProgramFiles)/Lightning Software Development Kit/Libraries/SDL2_gfx-v1.0.6-x64.dll" />
+		<None Remove="$(ProgramFiles)/Lightning Software Development Kit/Libraries/SDL2_image-v2.0.5-x64.dll" />
+		<None Remove="$(ProgramFiles)/Lightning Software Development Kit/Libraries/SDL2_ttf-v2.0.18-x64.dll" />
+		<None Remove="$(ProgramFiles)/Lightning Software Development Kit/Libraries/SDL2_mixer-v2.0.4-x64.dll" />
+		<None Remove="Content\Localisation\en-GB.ini" />
+		<None Remove="Content\Sprites.png" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Content Include="$(ProgramFiles)/Lightning Software Development Kit/libFLAC-8.dll">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+			<Link>libFLAC-8.dll</Link>
+		</Content>
+		<Content Include="$(ProgramFiles)/Lightning Software Development Kit/libmodplug-1.dll">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+			<Link>libmodplug-1.dll</Link>
+		</Content>
+		<Content Include="$(ProgramFiles)/Lightning Software Development Kit/libmpg123-0.dll">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+			<Link>libmpg123-0.dll</Link>
+		</Content>
+		<Content Include="$(ProgramFiles)/Lightning Software Development Kit/libogg-0.dll">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+			<Link>libogg-0.dll</Link>
+		</Content>
+		<Content Include="$(ProgramFiles)/Lightning Software Development Kit/libopus-0.dll">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+			<Link>libopus-0.dll</Link>
+		</Content>
+		<Content Include="$(ProgramFiles)/Lightning Software Development Kit/libopusfile-0.dll">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+			<Link>libopusfile-0.dll</Link>
+		</Content>
+		<Content Include="$(ProgramFiles)/Lightning Software Development Kit/libpng16-16.dll">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+			<Link>libpng16-16.dll</Link>
+		</Content>
+		<Content Include="$(ProgramFiles)/Lightning Software Development Kit/libvorbis-0.dll">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+			<Link>libvorbis-0.dll</Link>
+		</Content>
+		<Content Include="$(ProgramFiles)/Lightning Software Development Kit/libvorbisfile-3.dll">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+			<Link>libvorbisfile-3.dll</Link>
+		</Content>
+		<Content Include="$(ProgramFiles)/Lightning Software Development Kit/zlib1.dll">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+			<Link>zlib1.dll</Link>
+		</Content>
+		<Content Include="Content/Engine.ini">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="$(ProgramFiles)/Lightning Software Development Kit/Libraries/libfreetype-6.dll">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+			<Link>Libraries/libfreetype-6.dll</Link>
+		</Content>
+		<Content Include="$(ProgramFiles)/Lightning Software Development Kit/Libraries/libjpeg-9.dll">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+			<Link>Libraries/libjpeg-9.dll</Link>
+		</Content>
+		<Content Include="$(ProgramFiles)/Lightning Software Development Kit/Libraries/libtiff-5.dll">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+			<Link>Libraries/libtiff-5.dll</Link>
+		</Content>
+		<Content Include="$(ProgramFiles)/Lightning Software Development Kit/Libraries/libwebp-7.dll">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+			<Link>Libraries/libwebp-7.dll</Link>
+		</Content>
+		<Content Include="$(ProgramFiles)/Lightning Software Development Kit/Libraries/SDL2.dll">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+			<Link>Libraries/SDL2.dll</Link>
+		</Content>
+		<Content Include="$(ProgramFiles)/Lightning Software Development Kit/Libraries/SDL2_gfx-v1.0.6-x64.dll">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+			<Link>Libraries/SDL2_gfx-v1.0.6-x64.dll</Link>
+		</Content>
+		<Content Include="$(ProgramFiles)/Lightning Software Development Kit/Libraries/SDL2_image-v2.0.5-x64.dll">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+			<Link>Libraries/SDL2_image-v2.0.5-x64.dll</Link>
+		</Content>
+		<Content Include="$(ProgramFiles)/Lightning Software Development Kit/Libraries/SDL2_ttf-v2.0.18-x64.dll">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+			<Link>Libraries/SDL2_ttf-v2.0.18-x64.dll</Link>
+		</Content>
+		<Content Include="$(ProgramFiles)/Lightning Software Development Kit/Libraries/SDL2_mixer-v2.0.4-x64.dll">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+			<Link>Libraries/SDL2_mixer-v2.0.4-x64.dll</Link>
+		</Content>
+		<Content Include="Content\Localisation\en-GB.ini">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Content\Sprites.png">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+	</ItemGroup>
+</Project>
