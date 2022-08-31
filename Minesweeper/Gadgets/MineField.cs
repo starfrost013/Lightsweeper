@@ -50,10 +50,10 @@ namespace Minesweeper
                 _ = int.TryParse(mineFieldSizeY, out var mineFieldSizeYValue);
                 _ = int.TryParse(numberOfMines, out var numberOfMinesValue);
 
-                if (mineFieldSizeXValue > 0
-                    || mineFieldSizeYValue > 0) MineFieldSize = new Vector2(mineFieldSizeXValue, mineFieldSizeYValue);
+                if (mineFieldSizeXValue > 2
+                    || mineFieldSizeYValue > 2) MineFieldSize = new Vector2(mineFieldSizeXValue, mineFieldSizeYValue);
 
-                if (numberOfMinesValue > 0) NumberOfMines = numberOfMinesValue;
+                if (numberOfMinesValue > 2) NumberOfMines = numberOfMinesValue;
             }
 
             SceneManager.MainWindow.Settings.Size = new Vector2(MineElementSize.X * (MineFieldSize.X + 2), MineElementSize.Y * (MineFieldSize.Y + 2)); 
